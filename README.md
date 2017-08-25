@@ -1,4 +1,11 @@
-# DataMining
+# DataMining :page_facing_up:
+
+- [x] Proposal 5pm 18th Aug 2017
+- [ ] Presentation or Demo in week 12
+- [ ] Report 5pm 20th Oct 2017
+
+# Proposal :white_check_mark:
+
 ## Application
 There are two sides of this project we are interested in. One side, as online peer-to-peer electronic business, both positive and negative of customer comments are valuable to analysis, and they could be the indicator of developing service quality, customer satisfaction and loyalty. On the other side, thousands and millions of pieces of comments are required time and money. To reduce such cost of analysis, technologies are indispensable. 
 
@@ -26,30 +33,43 @@ We will build a vocabulary of our dataset using Gensim. Then to vectorize every 
 ## Evaluations	
 In our case, evaluation strategies are measurements of performance of our classifier. Naively we will use accuracy as our main metric since the distribution of classes in our data is uniform. To measure the success of CNN model. We will also construct a 2x2 confusion matrix to check whether our classifier performs consistently for both classes.
 
-                      |Predicted Positive|Predicted Negative
-----------------------|------------------|------------
-Actual Positive       | TN               | FP
-Actual Negative       | FN               | TP
+|                      | Predicted Positive | Predicted Negative |
+| -------------------- | ------------------ |------------------|
+| Actual Positive      | TN                 | FP               |
+| Actual Negative      | FN                 | TP               |
+
 
 True positives (TP): These are comments in which we predicted negative, and actually they are negative as well.
+
 True negatives (TN): We predicted positive, and actually, they are positive as well.
+
 False positives (FP): We predicted negative, but actually, they are positive.
+
 False negatives (FN): We predicted positive, but they actually are negative. 
+
 
 However, our classifier is only about two classes, and will be trained via CNN, thus ROC (Receiver Operating Characteristics) may not be used to evaluate our results. 
 In the end, we will use some new data to test our model. higher accuracy means better performance of our classification model.
 
 ## References
 [1] Kotzias et. al, '*From Group to Individual Labels using Deep Features*', KDD, 2015 
+
 [2] Kim, ‘*Convolutional Neural Networks for Sentence Classification*’, arXiv, 2014
 
-## Appendix									
+## Appendix	:link:						
 Deep learning software library: TensorFlow 1.2
+
 Website:https://www.tensorflow.org
+
 Python Deep learning library: Keras 2.0
+
 Website: https://keras.io
+
 Fast Vector Space Modelling Python library: Gensim
+
 Website: https://pypi.python.org/pypi/gensim
+
 Data Sets:
+
 Website: http://archive.ics.uci.edu/ml/datasets/Sentiment+Labelled+Sentences?fref=gc
 
