@@ -1,12 +1,17 @@
 from preprocess import PreProcess
-from textMiner import TextMiner
+#from textMiner import TextMiner
 class TextMining():
 
-    def __init__(self):
+    def main(self):
         super().__init__()
-        self.preprocessor = PreProcess()
-        self.textminer = TextMiner()
+        folderPath = input("Folder Path:")
+        folderPath = "/Users/remosy/DataMining/Demo/textData"
+        self.preprocessor = PreProcess(folderPath)
+        #self.textminer = TextMiner()
         self.displayData()
 
     def displayData(self):
         print("Finished")
+
+if __name__ == '__main__':
+    TextMining().main()
