@@ -25,7 +25,8 @@ class PreProcess:
             if file.endswith(".txt") | file.endswith(".csv"):
                 path = join(folder_path, file)
                 print("Start to process file: " + path, end='\n')
-                collection.append(self.process_doc(path))
+                collection+=(self.process_doc(path))
+                print(collection.__len__())
         return collection
 
     def load_data2(self, folder_path):
@@ -42,40 +43,15 @@ class PreProcess:
         #print("Start to process file: " + path, end='\n')
         count = 0
         f = open(path, 'r')
+        doc = []
         for line in f:
             line = line.split('\t')
             count = count + 1
             #print("No. "+str(count)+": "+line[0], end='\n')
-            for token, tag in pos_tag(wordpunct_tokenize(line[0])):
-                # Apply preprocessing to the token
-                token = token.lower() if self.lower else token
-                token = token.strip() if self.strip else token
-                token = token.strip('_') if self.strip else token
-                token = token.strip('*') if self.strip else token
-                #token = token.strip('.') if self.strip else token
-                #token = token.strip(',') if self.strip else token
+            list = self.processSentence(line)
+            doc.append(list)
+        return doc
 
-                #print("[" + token + "____" + tag + " ] ")
-
-                # If stopword, ignore token and continue
-                if token in self.stopwords:
-                    continue
-
-                # If punctuation, ignore token and continue
-                if all(char in self.punct for char in token):
-                    continue
-
-                # Lemmatize the token and yield
-                lemma = self.lemmatize(token, tag)
-                yield lemma
-
-                # Debug using
-                #for i in lemma:
-                    #print("Lemmatize: " + i, end='\n')
-                #print("--------------------------------")
-                #if count > 3:
-                    #print("***")
-                    #return
 
     def lemmatize(self, token, tag):
         tag = {
@@ -85,6 +61,38 @@ class PreProcess:
             'J': wn.ADJ
         }.get(tag[0], wn.NOUN)
         return self.lemmatizer.lemmatize(token, tag)
+
+    def processSentence(self,line):
+        for token, tag in pos_tag(wordpunct_tokenize(line[0])):
+            # Apply preprocessing to the token
+            token = token.lower() if self.lower else token
+            token = token.strip() if self.strip else token
+            token = token.strip('_') if self.strip else token
+            token = token.strip('*') if self.strip else token
+            # token = token.strip('.') if self.strip else token
+            # token = token.strip(',') if self.strip else token
+
+            # print("[" + token + "____" + tag + " ] ")
+
+            # If stopword, ignore token and continue
+            if token in self.stopwords:
+                continue
+
+            # If punctuation, ignore token and continue
+            if all(char in self.punct for char in token):
+                continue
+
+            # Lemmatize the token and yield
+            lemma = self.lemmatize(token, tag)
+            yield lemma
+
+            # Debug using
+            # for i in lemma:
+            # print("Lemmatize: " + i, end='\n')
+            # print("--------------------------------")
+            # if count > 3:
+            # print("***")
+            # return
 
     def transform(self, X):
         return [" ".join(doc) for doc in X]
