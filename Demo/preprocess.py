@@ -2,7 +2,7 @@ import string
 from os import listdir
 from os.path import join
 
-from nltk.corpus import stopwords as sw
+from nltk.corpus import stopwords as sw, words, stopwords
 from nltk.corpus import wordnet as wn
 from nltk import wordpunct_tokenize, word_tokenize
 from nltk import WordNetLemmatizer
@@ -29,16 +29,6 @@ class PreProcess:
                 print(collection.__len__())
         return collection
 
-    def load_data2(self, folder_path):
-        collection = ""
-        for file in listdir(folder_path):
-            if file.endswith(".txt") | file.endswith(".csv"):
-                path = join(folder_path, file)
-                print("Start to process file: " + path, end='\n')
-                temp = " ".join(self.process_doc(path))
-                collection += (temp + " ")
-        return collection
-
     def process_doc(self, path):
         #print("Start to process file: " + path, end='\n')
         count = 0
@@ -48,8 +38,9 @@ class PreProcess:
             line = line.split('\t')
             count = count + 1
             #print("No. "+str(count)+": "+line[0], end='\n')
-            list = self.processSentence(line)
-            doc.append(list)
+            tmp_str = " ".join(self.processSentence(line))
+            doc.append(tmp_str)
+        print(doc)
         return doc
 
 
@@ -101,7 +92,16 @@ class PreProcess:
         #Filter by the frequency of appearance <= 5
         token = word_tokenize(lemmatized_string)
         distance = FreqDist(token)
-        return list(filter(lambda x: x[1] <= 5, distance.items()))
+        sparses = list(filter(lambda x: x[1] <= 5, distance.items()))
+        return [i[0] for i in sparses]
+
+    def getCleanedSent(self,sparseWords,lemmatized_strings):
+        lemmatized_list = []
+        for x in lemmatized_strings:
+            list = x.split(' ')
+            lemmatized_list.append([j for j in list if j not in sparseWords])
+        print(lemmatized_list)
+        return lemmatized_list
 
     def vector_Data(self, cleaned_Data):
         return

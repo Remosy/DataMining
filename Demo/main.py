@@ -7,13 +7,15 @@ class TextMining():
         self.preProcess = PreProcess()
 
         # without transforming string
-        self.lemmatized_1 = self.preProcess.load_data1(self.folderPath)
-
+        self.lemmatizedList = self.preProcess.load_data1(self.folderPath)
+        self. allWords = (" ".join(self.lemmatizedList))
+        print(self.allWords)
         # transform lemmatized_list(3 generators) into a long string separate by space
-        #self.lemmatized_2 = self.preProcess.load_data2(self.folderPath)
+        self.sparseWords =  self.preProcess.cleanByFrequency(self.allWords)
 
-        #self.filterResults =  self.preProcess.cleanByFrequency(self.lemmatized_2)
-        #self.textminer = TextMiner()
+        # filter by sequence
+        self.cleanedSentences = self.preProcess.getCleanedSent(self.sparseWords,self.lemmatizedList)
+
         self.displayData()
 
 
@@ -23,16 +25,15 @@ class TextMining():
         #print("File 1 has: "+ str(sum(1 for x in (self.lemmatized_1[0]))))
         #print("File 2 has: " + str(sum(1 for x in (self.lemmatized_1[1]))))
         #print("File 3 has: " + str(sum(1 for x in (self.lemmatized_1[2])))+'\n')
-        list1 = self.lemmatized_1[0]
-        list2 = self.lemmatized_1[1]
-        list3 = self.lemmatized_1[2]
-        '''print("File 1 has: " + str(sum(1 for x in (self.lemmatized_1[0]))))
-        print("File 2 has: " + str(sum(1 for x in (self.lemmatized_1[1]))))
-        print("File 3 has: " + str(sum(1 for x in (self.lemmatized_1[2])))+'\n')'''
+        print("[After lemmatizer, there are "+str(self.lemmatizedList.__len__())+" sentences]")
+
 
         #print("All text has: " + str(len(self.lemmatized_2.split())))
-        #print("After filter, the # of words(freq <= 5) has: "+ str(len(self.filterResults))+'\n')
-        #print(self.filterResults)
+        print("After filter, the # of words(freq <= 5) has: "+ str(len(self.sparseWords))+'\n')
+        print("Un-common dictionary = ")
+        print(self.sparseWords)
+        print(self.cleanedSentences)
+
         print("Finished \n")
 
 if __name__ == '__main__':
