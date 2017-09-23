@@ -1,23 +1,35 @@
 import string
 from os import listdir
 from os.path import join
+from time import strftime, gmtime
 
-from nltk.corpus import stopwords as sw, words, stopwords
+from gensim.models import Word2Vec
+from gensim.models.doc2vec import TaggedDocument
+from nltk.corpus import stopwords as sw
 from nltk.corpus import wordnet as wn
 from nltk import wordpunct_tokenize, word_tokenize
 from nltk import WordNetLemmatizer
 from nltk import FreqDist
 from nltk import pos_tag
 
+import gensim, logging
+
 
 class PreProcess:
-    def __init__(self,stopwords=None, punct=None,
+    def __init__(self,folderPath,stopwords=None, punct=None,
                  lower=True, strip=True):
         self.lower = lower
         self.strip = strip
         self.stopwords = stopwords or set(sw.words('english'))
         self.punct = punct or set(string.punctuation)
         self.lemmatizer = WordNetLemmatizer()
+        ############# Process ############
+        self.lemmatizedList = self.load_data1(folderPath)
+        self.dataList = self.getDataList()
+        self.allWords = self.extractSentence()
+        self.Labels = self.extractLabels()
+        self.sparseWords = self.cleanByFrequency(self.allWords)
+        self.cleanedSentences = self.getCleanedSent(self.sparseWords, self.dataList)
 
     def load_data1(self, folder_path):
         collection = []
@@ -34,14 +46,16 @@ class PreProcess:
         count = 0
         f = open(path, 'r')
         doc = []
+        labels = []
         for line in f:
             line = line.split('\t')
             count = count + 1
             #print("No. "+str(count)+": "+line[0], end='\n')
             tmp_str = " ".join(self.processSentence(line))
             doc.append(tmp_str)
-        print(doc)
-        return doc
+            labels.append(line[1])
+        #print(doc)
+        return [doc,labels]
 
 
     def lemmatize(self, token, tag):
@@ -60,8 +74,6 @@ class PreProcess:
             token = token.strip() if self.strip else token
             token = token.strip('_') if self.strip else token
             token = token.strip('*') if self.strip else token
-            # token = token.strip('.') if self.strip else token
-            # token = token.strip(',') if self.strip else token
 
             # print("[" + token + "____" + tag + " ] ")
 
@@ -104,4 +116,37 @@ class PreProcess:
         return lemmatized_list
 
     def vector_Data(self, cleaned_Data):
-        return
+        model = Word2Vec(cleaned_Data, size=100, window=2, min_count= 1)
+        print(model)
+        model.init_sims(replace=True)
+        timeStamp = strftime("%d%b_%H_%M_%S", gmtime())
+        model.wv.save_word2vec_format('Output/WV'+timeStamp+'.word2vec.txt', binary=False)
+        model.wv.save_word2vec_format('Output/WV'+timeStamp+'.word2vec.bin', binary=True)
+        return model
+
+    def extractSentence(self):
+        allLabels = " "
+        allLabels += " ".join(self.lemmatizedList[0])
+        allLabels += " ".join(self.lemmatizedList[2])
+        allLabels += " ".join(self.lemmatizedList[4])
+        return allLabels
+
+    def extractLabels(self):
+        list = []
+        list+=(self.lemmatizedList[1])
+        list+=(self.lemmatizedList[3])
+        list+=(self.lemmatizedList[5])
+        return list
+
+    def getDataList(self):
+        list = []
+        list+=(self.lemmatizedList[0])
+        list+=(self.lemmatizedList[2])
+        list+=(self.lemmatizedList[4])
+        return list
+
+
+    # Method support doc2vec
+    def makePreVector(self,cleaned_Data,labels):
+        for x, y in zip(cleaned_Data,labels):
+            yield TaggedDocument(x,[y])
