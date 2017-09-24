@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 
 class SentenceLevel:
     def __init__(self,cleanedData):
+        self.sentences = cleanedData
         self.wordMatrix = self.getWordMatrix(cleanedData)
         self.saveMatrix = self.save(self.wordMatrix)
         self.docInput = self.getDocInput(self.wordMatrix)
@@ -22,7 +23,7 @@ class SentenceLevel:
 
     def getDocInput(self,model):
         docinput = []
-        for sentence in model:
+        for sentence in self.sentences:
             sentenceMatrix = []
             for word in sentence:
                 sentenceMatrix.append(model.wv[word])

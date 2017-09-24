@@ -1,8 +1,11 @@
+
 from gensim.models import KeyedVectors, Doc2Vec
 
+from documentLevel import DocumentLevel
 from preprocess import PreProcess
 #from textMiner import TextMiner
 from sentenceLevel import SentenceLevel
+
 
 
 class TextMining():
@@ -34,34 +37,13 @@ class TextMining():
         self.sentenceLevel = SentenceLevel(self.preProcess.cleanedSentences)
 
         '''Process Document Level'''
-        
+        # Start TensorFlow Session
+        self.documentLevel = DocumentLevel(self.sentenceLevel.docInput,self.preProcess.Labels)
 
         # display results
         #self.displayData()
         '''Summary All Process'''
 
-
-
-    def extractSentence(self):
-        allLabels = " "
-        allLabels += " ".join(self.lemmatizedList[0])
-        allLabels += " ".join(self.lemmatizedList[2])
-        allLabels += " ".join(self.lemmatizedList[4])
-        return allLabels
-
-    def extractLabels(self):
-        list = []
-        list+=(self.lemmatizedList[1])
-        list+=(self.lemmatizedList[3])
-        list+=(self.lemmatizedList[5])
-        return list
-
-    def getDataList(self):
-        list = []
-        list+=(self.lemmatizedList[0])
-        list+=(self.lemmatizedList[2])
-        list+=(self.lemmatizedList[4])
-        return list
 
     def displayData(self):
         #for i in self.vectors[0]:
@@ -69,14 +51,14 @@ class TextMining():
         #print("File 1 has: "+ str(sum(1 for x in (self.lemmatized_1[0]))))
         #print("File 2 has: " + str(sum(1 for x in (self.lemmatized_1[1]))))
         #print("File 3 has: " + str(sum(1 for x in (self.lemmatized_1[2])))+'\n')
-        print("[After lemmatizer, there are "+str(self.lemmatizedList.__len__())+" sentences]")
+        #print("[After lemmatizer, there are "+str(self.lemmatizedList.__len__())+" sentences]")
 
 
         #print("All text has: " + str(len(self.lemmatized_2.split())))
-        print("After filter, the # of words(freq <= 5) has: "+ str(len(self.sparseWords))+'\n')
+        #print("After filter, the # of words(freq <= 5) has: "+ str(len(self.sparseWords))+'\n')
         print("Un-common dictionary = ")
-        print(self.sparseWords)
-        print(self.cleanedSentences)
+        #print(self.sparseWords)
+        #print(self.cleanedSentences)
 
         #Vectorise
         word_vectors = Doc2Vec.load('textData/wordsVectors.doc2vec')  # text format
