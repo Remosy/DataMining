@@ -1,6 +1,7 @@
 from time import strftime, gmtime
 
 from gensim.models import Word2Vec
+import numpy as np
 
 
 class SentenceLevel:
@@ -22,10 +23,8 @@ class SentenceLevel:
         model.wv.save_word2vec_format('Output/WV' + timeStamp + '.word2vec.bin', binary=True)
 
     def getDocInput(self,model):
-        docinput = []
-        for sentence in self.sentences:
-            sentenceMatrix = []
-            for word in sentence:
-                sentenceMatrix.append(model.wv[word])
-            docinput.append(sentenceMatrix)
+        docinput = np.zeros((len(self.sentences),53,100))
+        for i in np.arange(len(self.sentences)):
+            for j in np.arange(len(self.sentences[i])):
+                docinput[i,j]=model.wv[self.sentences[i][j]]
         return docinput

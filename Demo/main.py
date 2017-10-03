@@ -30,6 +30,7 @@ class TextMining():
         #self.cleanedSentences = self.preProcess.getCleanedSent(self.sparseWords,self.dataList)
         '''Pre Process'''
         self.preProcess = PreProcess(self.folderPath)
+        
 
         # vectorise remnant of sentences
         #self.X_train = self.preProcess.vector_Data(self.cleanedSentences,self.Labels)
