@@ -23,6 +23,9 @@ class PreProcess:
         self.stopwords = stopwords or set(sw.words('english'))
         self.punct = punct or set(string.punctuation)
         self.lemmatizer = WordNetLemmatizer()
+        self.poswd = ["do","does","are","is","were","was","be"]
+        self.negwd = ["doesnt","doesn't","aren't","arent","isn't","isnt","weren't","were","was","wasn't"]
+        self.pp = ["it","this","that","they","she","he","these","those"]
         ############# Process ############
         self.lemmatizedList = self.load_data1(folderPath)
         self.dataList = self.getDataList()
@@ -59,40 +62,44 @@ class PreProcess:
 
 
     def lemmatize(self, token, tag):
-        tag = {
+        tags = {
             'N': wn.NOUN,
             'V': wn.VERB,
             'R': wn.ADV,
             'J': wn.ADJ
-        }.get(tag[0], wn.NOUN)
-        return self.lemmatizer.lemmatize(token, tag)
+        }
+        if tag == "VBD":
+            return self.lemmatizer.lemmatize(token, tags.get(tag[1],wn.VERB))
+        else:
+            return self.lemmatizer.lemmatize(token, tags.get(tag[0], wn.NOUN))
 
     def processSentence(self,line):
         for token, tag in pos_tag(wordpunct_tokenize(line[0])):
+            #print("[Before: " + token + "____" + tag + " ] ")
             # Apply preprocessing to the token
             token = token.lower() if self.lower else token
             token = token.strip() if self.strip else token
             token = token.strip('_') if self.strip else token
             token = token.strip('*') if self.strip else token
 
-            # print("[" + token + "____" + tag + " ] ")
-
+            print("[" + token + "____" + tag + " ] ")
             # If stopword, ignore token and continue
-            if token in self.stopwords:
+            if tag == "PRP" or tag == "PRP$" or tag == "IN":
                 continue
 
             # If punctuation, ignore token and continue
             if all(char in self.punct for char in token):
                 continue
+            #print("[After" + token + "____" + tag + " ] ")
 
             # Lemmatize the token and yield
             lemma = self.lemmatize(token, tag)
             yield lemma
 
             # Debug using
-            # for i in lemma:
-            # print("Lemmatize: " + i, end='\n')
-            # print("--------------------------------")
+            #for i in lemma:
+             #print("Lemmatize: " + i, end='\n')
+             #print("--------------------------------")
             # if count > 3:
             # print("***")
             # return
@@ -116,7 +123,7 @@ class PreProcess:
         return lemmatized_list
 
     def vector_Data(self, cleaned_Data):
-        model = Word2Vec(cleaned_Data, size=100, window=2, min_count= 1)
+        model = Word2Vec(cleaned_Data, size=300, window=2, min_count= 1)
         print(model)
         model.init_sims(replace=True)
         timeStamp = strftime("%d%b_%H_%M_%S", gmtime())

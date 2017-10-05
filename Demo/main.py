@@ -30,6 +30,11 @@ class TextMining():
         #self.cleanedSentences = self.preProcess.getCleanedSent(self.sparseWords,self.dataList)
         '''Pre Process'''
         self.preProcess = PreProcess(self.folderPath)
+        '''i = 0
+        for x in self.preProcess.cleanedSentences:
+            i+=1
+            print(str(i) + ": ")
+            print(x)'''
         
 
         # vectorise remnant of sentences
