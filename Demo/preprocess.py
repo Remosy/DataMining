@@ -68,6 +68,7 @@ class PreProcess:
             'R': wn.ADV,
             'J': wn.ADJ
         }
+
         if tag == "VBD":
             return self.lemmatizer.lemmatize(token, tags.get(tag[1],wn.VERB))
         else:
@@ -82,9 +83,11 @@ class PreProcess:
             token = token.strip('_') if self.strip else token
             token = token.strip('*') if self.strip else token
 
+            if (token in ("don't","doesn't","couldn't","can't")):
+                token = "not"
             print("[" + token + "____" + tag + " ] ")
             # If stopword, ignore token and continue
-            if tag == "PRP" or tag == "PRP$" or tag == "IN":
+            if tag == "PRP" or tag == "PRP$" or tag == "IN" or tag=="TO" or tag[0]=='W' or tag=="DT":
                 continue
 
             # If punctuation, ignore token and continue
@@ -143,6 +146,7 @@ class PreProcess:
         list+=(self.lemmatizedList[1])
         list+=(self.lemmatizedList[3])
         list+=(self.lemmatizedList[5])
+        print("labels size = "+str(len(list)))
         return list
 
     def getDataList(self):
