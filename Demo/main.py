@@ -11,7 +11,7 @@ from sentenceLevel import SentenceLevel
 class TextMining():
     def __init__(self):
         super().__init__()
-        self.folderPath = "/Users/remosy/DataMining/Demo/textData"
+        self.folderPath = "textData"
 
         # without transforming string
         # List structure: [[data1][data1_label][data2][data2_label][data3][data3_label]]

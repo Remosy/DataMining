@@ -20,7 +20,7 @@ class PreProcess:
                  lower=True, strip=True):
         self.lower = lower
         self.strip = strip
-        self.stopwords = stopwords or set(sw.words('english'))
+        #self.stopwords = stopwords or set(sw.words('english'))
         self.punct = punct or set(string.punctuation)
         self.lemmatizer = WordNetLemmatizer()
         self.poswd = ["do","does","are","is","were","was","be"]
@@ -75,7 +75,7 @@ class PreProcess:
             return self.lemmatizer.lemmatize(token, tags.get(tag[0], wn.NOUN))
 
     def processSentence(self,line):
-        for token, tag in pos_tag(wordpunct_tokenize(line[0])):
+        for token, tag in pos_tag(word_tokenize(line[0])):
             #print("[Before: " + token + "____" + tag + " ] ")
             # Apply preprocessing to the token
             token = token.lower() if self.lower else token
@@ -83,13 +83,12 @@ class PreProcess:
             token = token.strip('_') if self.strip else token
             token = token.strip('*') if self.strip else token
 
-            if (token in ("don't","doesn't","couldn't","can't")):
-                token = "not"
-            print("[" + token + "____" + tag + " ] ")
+            #print("[" + token + "____" + tag + " ] ")
             # If stopword, ignore token and continue
-            if tag == "PRP" or tag == "PRP$" or tag == "IN" or tag=="TO" or tag[0]=='W' or tag=="DT":
+            #if tag in ("PRP","PRP$","IN","TO",'WDT',"DT","CC","EX","WP","WRB"):
+            #    continue
+            if tag not in ("NN","JJ","JJR","JJS","MD","NNP","NNS","RB"):
                 continue
-
             # If punctuation, ignore token and continue
             if all(char in self.punct for char in token):
                 continue
