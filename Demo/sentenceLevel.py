@@ -12,7 +12,7 @@ class SentenceLevel:
         self.docInput = self.getDocInput(self.wordMatrix)
 
     def getWordMatrix(self,cleanedData):
-        model = Word2Vec(cleanedData, size=200, window=2, min_count=1)
+        model = Word2Vec(cleanedData, size=100, window=2, min_count=1)
         print(model)
         model.init_sims(replace=True)
         return model
@@ -23,7 +23,7 @@ class SentenceLevel:
         model.wv.save_word2vec_format('Output/WV' + timeStamp + '.word2vec.bin', binary=True)
 
     def getDocInput(self,model):
-        docinput = np.zeros((len(self.sentences),45,200))
+        docinput = np.zeros((len(self.sentences),20,100))
         for i in np.arange(len(self.sentences)):
             for j in np.arange(len(self.sentences[i])):
                 docinput[i,j]=model.wv[self.sentences[i][j]]

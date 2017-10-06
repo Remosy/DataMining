@@ -23,14 +23,14 @@ class DocumentLevel:
         return
 
     def train(self):
-        X_train, X_test, y_train, y_test = train_test_split(self.train_data, self.labels, test_size=0.15,random_state=87)
+        X_train, X_test, y_train, y_test = train_test_split(self.train_data, self.labels, test_size=0.15,random_state=43)
         print("Train data has: "+str(len(X_train)))
         print("Test data has: "+str(len(X_test)))
         model = Sequential()
-        model.add(Conv1D(256, 5, activation='relu', padding='same', input_shape=(45, 200)))
+        model.add(Conv1D(256, 5, activation='relu', padding='same', input_shape=(20, 100)))
         model.add(GlobalMaxPooling1D())
         model.add(Dropout(0.5)) # fraction rate for input, prevent over fitting by setting 0.5
-        model.add(Dense(128,kernel_regularizer=regularizers.l2(0.002), activation='relu'))
+        model.add(Dense(256,kernel_regularizer=regularizers.l2(0.001), activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',

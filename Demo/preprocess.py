@@ -20,12 +20,9 @@ class PreProcess:
                  lower=True, strip=True):
         self.lower = lower
         self.strip = strip
-        #self.stopwords = stopwords or set(sw.words('english'))
+        self.stopwords = stopwords or set(sw.words('english'))
         self.punct = punct or set(string.punctuation)
         self.lemmatizer = WordNetLemmatizer()
-        self.poswd = ["do","does","are","is","were","was","be"]
-        self.negwd = ["doesnt","doesn't","aren't","arent","isn't","isnt","weren't","were","was","wasn't"]
-        self.pp = ["it","this","that","they","she","he","these","those"]
         ############# Process ############
         self.lemmatizedList = self.load_data1(folderPath)
         self.dataList = self.getDataList()
@@ -83,15 +80,43 @@ class PreProcess:
             token = token.strip('_') if self.strip else token
             token = token.strip('*') if self.strip else token
 
+            # If punctuation, ignore token and continue
+            if all(char in self.punct for char in token):
+                continue
+
+            print("[before: " + token + "____" + tag + " ] ")
+
+            if token == "'d":
+                token = "had";
+
+            if token == "'ll":
+                token = "will";
+
+            if token == "'ve":
+                token = "have"
+
+            if token == "'s" and tag=="VBZ":
+                token = "has"
+
+            if token == "'s" and tag=="POS":
+                token = "is"
+
+            if token == "n't":
+                token = "not"
+
+            if token == "'re":
+                token = "are"
+            print("[after: " + token + "____" + tag + " ] ")
             #print("[" + token + "____" + tag + " ] ")
             # If stopword, ignore token and continue
             #if tag in ("PRP","PRP$","IN","TO",'WDT',"DT","CC","EX","WP","WRB"):
             #    continue
-            if tag not in ("NN","JJ","JJR","JJS","MD","NNP","NNS","RB"):
+            if tag not in ("JJ","JJR","JJS","MD","NNP","RB"):
                 continue
-            # If punctuation, ignore token and continue
-            if all(char in self.punct for char in token):
-                continue
+
+            #if token in self.stopwords:
+                #continue
+
             #print("[After" + token + "____" + tag + " ] ")
 
             # Lemmatize the token and yield
@@ -123,15 +148,6 @@ class PreProcess:
             lemmatized_list.append([j for j in list if j not in sparseWords])
         print(lemmatized_list)
         return lemmatized_list
-
-    def vector_Data(self, cleaned_Data):
-        model = Word2Vec(cleaned_Data, size=300, window=2, min_count= 1)
-        print(model)
-        model.init_sims(replace=True)
-        timeStamp = strftime("%d%b_%H_%M_%S", gmtime())
-        model.wv.save_word2vec_format('Output/WV'+timeStamp+'.word2vec.txt', binary=False)
-        model.wv.save_word2vec_format('Output/WV'+timeStamp+'.word2vec.bin', binary=True)
-        return model
 
     def extractSentence(self):
         allLabels = " "
