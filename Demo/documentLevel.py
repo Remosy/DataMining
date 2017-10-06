@@ -30,7 +30,7 @@ class DocumentLevel:
         model.add(Conv1D(256, 5, activation='relu', padding='same', input_shape=(20, 100)))
         model.add(GlobalMaxPooling1D())
         model.add(Dropout(0.5)) # fraction rate for input, prevent over fitting by setting 0.5
-        model.add(Dense(256,kernel_regularizer=regularizers.l2(0.001), activation='relu'))
+        model.add(Dense(256,kernel_regularizer=regularizers.l2(0.0001), activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
