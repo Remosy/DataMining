@@ -23,7 +23,7 @@ class SentenceLevel:
         model.wv.save_word2vec_format('Output/WV' + timeStamp + '.word2vec.bin', binary=True)
 
     def getDocInput(self,model):
-        docinput = np.zeros((len(self.sentences),20,100))
+        docinput = np.zeros((len(self.sentences),10,100))
         for i in np.arange(len(self.sentences)):
             for j in np.arange(len(self.sentences[i])):
                 docinput[i,j]=model.wv[self.sentences[i][j]]

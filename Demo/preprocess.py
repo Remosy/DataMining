@@ -57,19 +57,25 @@ class PreProcess:
         #print(doc)
         return [doc,labels]
 
-
     def lemmatize(self, token, tag):
         tags = {
             'N': wn.NOUN,
             'V': wn.VERB,
             'R': wn.ADV,
             'J': wn.ADJ
-        }
 
-        if tag == "VBD":
-            return self.lemmatizer.lemmatize(token, tags.get(tag[1],wn.VERB))
+        }
+        if tag.startswith('J'):
+            return self.lemmatizer.lemmatize(token, wn.ADJ)
+        elif tag.startswith('V'):
+            return self.lemmatizer.lemmatize(token, wn.VERB)
+        elif tag.startswith('R'):
+            return self.lemmatizer.lemmatize(token, wn.ADV)
         else:
-            return self.lemmatizer.lemmatize(token, tags.get(tag[0], wn.NOUN))
+            return self.lemmatizer.lemmatize(token)
+
+
+
 
     def processSentence(self,line):
         for token, tag in pos_tag(word_tokenize(line[0])):
@@ -87,10 +93,10 @@ class PreProcess:
             print("[before: " + token + "____" + tag + " ] ")
 
             if token == "'d":
-                token = "had";
+                token = "had"
 
             if token == "'ll":
-                token = "will";
+                token = "will"
 
             if token == "'ve":
                 token = "have"
@@ -106,14 +112,14 @@ class PreProcess:
 
             if token == "'re":
                 token = "are"
-            print("[after: " + token + "____" + tag + " ] ")
             #print("[" + token + "____" + tag + " ] ")
             # If stopword, ignore token and continue
             #if tag in ("PRP","PRP$","IN","TO",'WDT',"DT","CC","EX","WP","WRB"):
             #    continue
-            if tag not in ("JJ","JJR","JJS","MD","NNP","RB"):
-                continue
 
+            if tag not in ("JJ","JJR","JJS","MD","NNP","RB","RBR","RBS"):
+                print("[after: " +  "....... ____" + tag + " ] ")
+                continue
             #if token in self.stopwords:
                 #continue
 
@@ -122,7 +128,9 @@ class PreProcess:
             # Lemmatize the token and yield
             lemma = self.lemmatize(token, tag)
             yield lemma
+            token = lemma
 
+            print("[after: " + token + "____" + tag + " ] ")
             # Debug using
             #for i in lemma:
              #print("Lemmatize: " + i, end='\n')
