@@ -4,6 +4,7 @@ from os.path import join
 from time import strftime, gmtime
 
 from gensim.models import Word2Vec
+import numpy as np
 from gensim.models.doc2vec import TaggedDocument
 from nltk.corpus import stopwords as sw
 from nltk.corpus import wordnet as wn
@@ -53,7 +54,11 @@ class PreProcess:
             #print("No. "+str(count)+": "+line[0], end='\n')
             tmp_str = " ".join(self.processSentence(line))
             doc.append(tmp_str)
-            labels.append(line[1])
+            l = line[1][0]
+            if int(l) != 0 | int(l) != 1:
+                raise Warning("Label is wrong!")
+            else:
+                labels.append(int(l))
         #print(doc)
         return [doc,labels]
 
@@ -90,10 +95,10 @@ class PreProcess:
             if all(char in self.punct for char in token):
                 continue
 
-            print("[before: " + token + "____" + tag + " ] ")
+            #print("[before: " + token + "____" + tag + " ] ")
 
             if token == "'d":
-                token = "had"
+                token = "could"
 
             if token == "'ll":
                 token = "will"
@@ -118,7 +123,7 @@ class PreProcess:
             #    continue
 
             if tag not in ("JJ","JJR","JJS","MD","NNP","RB","RBR","RBS"):
-                print("[after: " +  "....... ____" + tag + " ] ")
+                #print("[after: " +  "....... ____" + tag + " ] ")
                 continue
             #if token in self.stopwords:
                 #continue
@@ -130,7 +135,7 @@ class PreProcess:
             yield lemma
             token = lemma
 
-            print("[after: " + token + "____" + tag + " ] ")
+            #print("[after: " + token + "____" + tag + " ] ")
             # Debug using
             #for i in lemma:
              #print("Lemmatize: " + i, end='\n')
@@ -169,8 +174,11 @@ class PreProcess:
         list+=(self.lemmatizedList[1])
         list+=(self.lemmatizedList[3])
         list+=(self.lemmatizedList[5])
-        print("labels size = "+str(len(list)))
-        return list
+        print("labels size = " + str(len(list)))
+        list_np = np.zeros((3000,1),dtype=int)
+        for i in np.arange(len(list)):
+            list_np[i] = list[i]
+        return list_np
 
     def getDataList(self):
         list = []
