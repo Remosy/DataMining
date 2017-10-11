@@ -41,14 +41,16 @@ class DocumentLevel:
                       loss='binary_crossentropy',
                       metrics=['accuracy'])
         #model.fit(X_train, y_train, batch_size=20, epochs=200, validation_data=(X_test,y_test), shuffle=True)
-        model.fit(X_train, y_train, batch_size=20, epochs=1, validation_data=(X_v, y_v), shuffle=True)
+        model.fit(X_train, y_train, batch_size=20, epochs=200, validation_data=(X_v, y_v), shuffle=True)
         sgd = optimizers.SGD(lr=0.02)
         model.compile(optimizer=sgd,
                       loss='binary_crossentropy',
                       metrics=['accuracy'])
         model.fit(X_train, y_train, batch_size=100, epochs=200, validation_data=(X_v, y_v))
         test_prediction = model.predict(X_test)
-
+        test_loss, test_accuracy = model.evaluate(X_test,y_test,verbose=0)
+        print('Test score:', test_loss)
+        print('Test accuracy:', test_accuracy)
         #y_test = np.array(y_test)
         #y_test = np.transpose(y_test)
         #test_prediction = np.array(test_prediction)
