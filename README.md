@@ -1,8 +1,8 @@
 # DataMining :page_facing_up:
 
 - [x] Proposal 5pm 18th Aug 2017
-- [ ] Presentation or Demo in week 12
-- [ ] Report 5pm 20th Oct 2017
+- [x] Presentation or Demo in week 12
+- [x] Report 5pm 20th Oct 2017
 
 # Proposal :white_check_mark:
 
