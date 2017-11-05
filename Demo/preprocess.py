@@ -70,11 +70,11 @@ class PreProcess:
             'J': wn.ADJ
 
         }
-        if tag.startswith('J'):
+        if tag.startswith('N'):
             return self.lemmatizer.lemmatize(token, wn.ADJ)
-        elif tag.startswith('V'):
+        elif tag.startswith('N'):
             return self.lemmatizer.lemmatize(token, wn.VERB)
-        elif tag.startswith('R'):
+        elif tag.startswith('N'):
             return self.lemmatizer.lemmatize(token, wn.ADV)
         else:
             return self.lemmatizer.lemmatize(token)
@@ -95,7 +95,7 @@ class PreProcess:
             if all(char in self.punct for char in token):
                 continue
 
-            #print("[before: " + token + "____" + tag + " ] ")
+            print("[before: " + token + "____" + tag + " ] ")
 
             if token == "'d":
                 token = "could"
@@ -122,13 +122,13 @@ class PreProcess:
             #if tag in ("PRP","PRP$","IN","TO",'WDT',"DT","CC","EX","WP","WRB"):
             #    continue
 
-            if tag not in ("JJ","JJR","JJS","MD","NNP","RB","RBR","RBS"):
-                #print("[after: " +  "....... ____" + tag + " ] ")
+            if tag not in ("JJ","JJR","JJS","MD","RB","RBR","RBS"):
+                print("[after: " +  "....... ____" + tag + " ] ")
                 continue
             #if token in self.stopwords:
                 #continue
 
-            #print("[After" + token + "____" + tag + " ] ")
+            print("[After" + token + "____" + tag + " ] ")
 
             # Lemmatize the token and yield
             lemma = self.lemmatize(token, tag)
